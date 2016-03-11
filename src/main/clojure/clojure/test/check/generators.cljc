@@ -15,6 +15,7 @@
   (:require [#?(:clj clojure.core :cljs cljs.core) :as core
              #?@(:cljs [:include-macros true])]
             [clojure.test.check.random :as random]
+            [clojure.test.check.unicode :as u]
             [clojure.test.check.rose-tree :as rose]
             #?@(:cljs [[goog.string :as gstring]
                        [clojure.string]])))
@@ -1114,12 +1115,32 @@
   (double* {}))
 
 
+(defn ranges-to-gens* [ranges]
+  (core/vec 
+   (core/map #(if (vector? %) 
+                (choose (first %) (second %))
+                (return %))
+             ranges)))
+
+(def ranges-to-gens (memoize ranges-to-gens*))
+
+(defn choices 
+  ""
+  [ranges]
+  (one-of (ranges-to-gens ranges)))
+
+
 ;; Characters & Strings
 ;; ---------------------------------------------------------------------------
+
+
+;; char and string
 
 (def char
   "Generates character from 0-255."
   (fmap core/char (choose 0 255)))
+
+
 
 (def char-ascii
   "Generate only ascii character."
@@ -1159,6 +1180,7 @@
   (frequency [[2 char-alpha]
               [1 char-symbol-special]]))
 
+
 (def string
   "Generate strings. May generate unprintable characters."
   (fmap clojure.string/join (vector char)))
@@ -1170,6 +1192,7 @@
 (def string-alphanumeric
   "Generate alphanumeric strings."
   (fmap clojure.string/join (vector char-alphanumeric)))
+
 
 (def ^{:deprecated "0.6.0"}
   string-alpha-numeric
@@ -1200,11 +1223,13 @@
        (such-that (fn [[c [d]]] (not (+-or---digit? c d))))
        (fmap (fn [[c cs]] (clojure.string/join (cons c cs))))))
 
+
 (def ^{:private true} namespace
   "Generate a namespace (or nil for no namespace)."
   (->> (vector namespace-segment)
        (fmap (fn [v] (when (seq v)
                        (clojure.string/join "." v))))))
+
 
 (def ^{:private true} keyword-segment-rest
   "Generate segments of a keyword (between \\:)"
@@ -1215,6 +1240,7 @@
   "Generate segments of a keyword that can be first (between \\:)"
   (->> (tuple char-keyword-first (vector char-keyword-rest))
        (fmap (fn [[c cs]] (clojure.string/join (cons c cs))))))
+
 
 (defn ^:private resize-symbolish-generator
   "Scales the sizing down on a keyword or symbol generator so as to
@@ -1230,6 +1256,7 @@
                (core/keyword (clojure.string/join ":" (cons c cs)))))
        (resize-symbolish-generator)))
 
+
 (def
   ^{:added "0.5.9"}
   keyword-ns
@@ -1238,6 +1265,7 @@
        (fmap (fn [[ns c cs]]
                (core/keyword ns (clojure.string/join (cons c cs)))))
        (resize-symbolish-generator)))
+
 
 (def ^{:private true} char-symbol-first
   (frequency [[10 char-alpha]
@@ -1249,6 +1277,7 @@
               [5 char-symbol-special]
               [1 (return \.)]]))
 
+
 (def symbol
   "Generate symbols without namespaces."
   (frequency [[100 (->> (tuple char-symbol-first (vector char-symbol-rest))
@@ -1256,6 +1285,7 @@
                         (fmap (fn [[c cs]] (core/symbol (clojure.string/join (cons c cs)))))
                         (resize-symbolish-generator))]
               [1 (return '/)]]))
+
 
 (def
   ^{:added "0.5.9"}
@@ -1266,6 +1296,144 @@
                         (fmap (fn [[ns c cs]] (core/symbol ns (clojure.string/join (cons c cs)))))
                         (resize-symbolish-generator))]
               [1 (return '/)]]))
+
+
+
+;; -------------------- Unicode --------------------
+;; unicode helpers
+;  "Create a vector of unicode character matching PRED" 
+(defn- ufilter  [pred]
+  (vec (filter pred (range (int \u0000) (int \uFFFF) 1))))
+
+;(defn- unicode-letter? [c]
+;  (if (string? c)
+;    (re-find unicode-letter-regex c)
+;    (re-find unicode-letter-regex (str c))))
+
+
+(defn uchar* 
+  "Generates unicode characters from \u0000 to \uFFFF filtered by pred."
+  ([pred] (uchar* pred \u0000 \uFFFF)) 
+  ([pred start end]
+     (such-that pred
+                (fmap core/char
+                      (choose start
+                              end)))))
+
+(defn- uchar? [^Character c]
+;;  #?(:clj #(Character/isDefined c) :cljs #(string? c)))
+  (core/let [r (Character/isDefined c)]
+    (if r r
+        (do (println "unchar? fails for " c r) r))))
+
+(def uchar
+  "Generates unicode characters from \u0000 to \uFFFF."
+  (uchar* uchar?))
+
+
+(defn uchar2
+  "Generates unicode characters from START to END."
+  [start end] (uchar* uchar? start end))
+
+(def uchar-alpha
+  "Generates letter unicode characters."
+  (fmap core/char
+        (choices u/letter-ranges)))
+
+(def uchar-numeric
+  "Generate digit unicode characters"
+  (fmap core/char 
+        (choices u/digit-ranges)))
+
+(def uchar-alphanumeric
+  "Generate alphanumeric unicode characters."
+  (frequency [ [1 uchar-numeric] [10 uchar-alpha]]))
+
+(def ^{:private true} uchar-keyword-rest
+  "Generate characters that can be the char following first of a keyword."
+  (frequency [[2 uchar-alphanumeric]
+              [1 char-symbol-special]]))
+
+(def ^{:private true} uchar-keyword-first
+  "Generate characters that can be the first char of a keyword."
+  (frequency [[2 uchar-alpha]
+              [1 char-symbol-special]]))
+
+(def ustring
+  "Generate strings. May generate unprintable characters."
+  (fmap clojure.string/join (vector uchar)))
+
+(def ustring-alphanumeric
+  "Generate alphanumeric strings."
+  (fmap clojure.string/join (vector uchar-alphanumeric)))
+
+(def ^{:private true} unamespace-segment
+  "Generate the segment of a Unicode namespace."
+  (->> (tuple uchar-keyword-first (vector uchar-keyword-rest))
+       (such-that (fn [[c [d]]] (not (+-or---digit? c d))))
+       (fmap (fn [[c cs]] (clojure.string/join (cons c cs))))))
+
+(def ^{:private true} unamespace
+  "Generate a Unicode namespace (or nil for no namespace)."
+  (->> (vector unamespace-segment)
+       (fmap (fn [v] (when (seq v)
+                       (clojure.string/join "." v))))))
+
+(def ^{:private true} ukeyword-segment-rest
+  "Generate segments of a Unicode keyword (between \\:)"
+  (->> (tuple uchar-keyword-rest (vector uchar-keyword-rest))
+       (fmap (fn [[c cs]] (clojure.string/join (cons c cs))))))
+
+(def ^{:private true} ukeyword-segment-first
+  "Generate segments of a Unicode keyword that can be first (between \\:)"
+  (->> (tuple uchar-keyword-first (vector uchar-keyword-rest))
+       (fmap (fn [[c cs]] (clojure.string/join (cons c cs))))))
+
+(def ukeyword
+  "Generate Unicode keywords without namespaces."
+  (->> (tuple ukeyword-segment-first (vector ukeyword-segment-rest))
+       (fmap (fn [[c cs]]
+               (core/keyword (clojure.string/join ":" (cons c cs)))))
+       (resize-symbolish-generator)))
+
+(def
+  ^{:added "0.5.9"}
+  ukeyword-ns
+  "Generate Unicode keywords with optional namespaces."
+  (->> (tuple unamespace uchar-keyword-first (vector uchar-keyword-rest))
+       (fmap (fn [[ns c cs]]
+               (core/keyword ns (clojure.string/join (cons c cs)))))
+       (resize-symbolish-generator)))
+
+(def ^{:private true} uchar-symbol-first
+  (frequency [[10 uchar-alpha]
+              [5 char-symbol-special]
+              [1 (return \.)]]))
+
+(def ^{:private true} uchar-symbol-rest
+  (frequency [[10 uchar-alphanumeric]
+              [5 char-symbol-special]
+              [1 (return \.)]]))
+(def usymbol
+  "Generate symbols without namespaces."
+  (frequency [[100 (->> (tuple uchar-symbol-first (vector uchar-symbol-rest))
+                        (such-that (fn [[c [d]]] (not (+-or---digit? c d))))
+                        (fmap (fn [[c cs]] (core/symbol (clojure.string/join (cons c cs)))))
+                        (resize-symbolish-generator))]
+              [1 (return '/)]]))
+
+(def
+  ^{:added "0.5.9"}
+  usymbol-ns
+  "Generate Unicode symbols with optional namespaces."
+  (frequency [[100 (->> (tuple unamespace char-symbol-first (vector char-symbol-rest))
+                        (such-that (fn [[_ c [d]]] (not (+-or---digit? c d))))
+                        (fmap (fn [[ns c cs]] (core/symbol ns (clojure.string/join (cons c cs)))))
+                        (resize-symbolish-generator))]
+              [1 (return '/)]]))
+
+
+; --------------------------------------------------------------------------
 
 (def ratio
   "Generates a `clojure.lang.Ratio`. Shrinks toward 0. Not all values generated

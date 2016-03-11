@@ -273,7 +273,9 @@
             (is (:result (tc/quick-check 100
                            (prop/for-all [x generator]
                              (pred x))))))
-        is-char-fn #?(:clj char? :cljs string?)]
+        is-char-fn #?(:clj char? :cljs string?)
+        is-uchar-fn #?(:clj (fn [^Character c] (let [r (Character/isDefined c) ^Integer i c] (if r r (do (println i) nil))))  :cljs string?)
+        ]
 
     (testing "keyword"              (t gen/keyword keyword?))
 
@@ -285,6 +287,10 @@
 
 
     (testing "char"                 (t gen/char                 is-char-fn))
+    (testing "uchar"                (t gen/uchar                is-uchar-fn))
+    (testing "uchar-alpha"          (t gen/uchar-alpha          is-uchar-fn))
+    (testing "uchar-numeric"        (t gen/uchar-numeric        is-uchar-fn))
+    (testing "uchar-alphanumeric"   (t gen/uchar-alphanumeric   is-uchar-fn))
     (testing "char-ascii"           (t gen/char-ascii           is-char-fn))
     (testing "char-alphanumeric"    (t gen/char-alphanumeric    is-char-fn))
     (testing "string"               (t gen/string               string?))

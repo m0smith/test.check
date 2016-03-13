@@ -113,41 +113,128 @@
    ;[ \u1D7CE \u1D7D7 ] [ \u1D7D8 \u1D7E1 ] [ \u1D7E2 \u1D7EB ] [ \u1D7EC \u1D7F5 ] [ \u1D7F6 \u1D7FF ]
  
 ])
-   
 
-(def doh
-  [48 49 50 51 52 53 54 55 56 57 
-   1632 1633 1634 1635 1636 1637 1638 1639 1640 1641 
-   1776 1777 1778 1779 1780 1781 1782 1783 1784 1785 
-   1984 1985 1986 1987 1988 1989 1990 1991 1992 1993 
-   2406 2407 2408 2409 2410 2411 2412 2413 2414 2415 
-   2534 2535 2536 2537 2538 2539 2540 2541 2542 2543 
-   2662 2663 2664 2665 2666 2667 2668 2669 2670 2671 
-   2790 2791 2792 2793 2794 2795 2796 2797 2798 2799 
-   2918 2919 2920 2921 2922 2923 2924 2925 2926 2927 
-   3046 3047 3048 3049 3050 3051 3052 3053 3054 3055 
-   3174 3175 3176 3177 3178 3179 3180 3181 3182 3183 
-   3302 3303 3304 3305 3306 3307 3308 3309 3310 3311 
-   3430 3431 3432 3433 3434 3435 3436 3437 3438 3439 
-   3664 3665 3666 3667 3668 3669 3670 3671 3672 3673 
-   3792 3793 3794 3795 3796 3797 3798 3799 3800 3801 
-   3872 3873 3874 3875 3876 3877 3878 3879 3880 3881 
-   4160 4161 4162 4163 4164 4165 4166 4167 4168 4169 
-   4240 4241 4242 4243 4244 4245 4246 4247 4248 4249 
-   6112 6113 6114 6115 6116 6117 6118 6119 6120 6121 
-   6160 6161 6162 6163 6164 6165 6166 6167 6168 6169 
-   6470 6471 6472 6473 6474 6475 6476 6477 6478 6479 
-   6608 6609 6610 6611 6612 6613 6614 6615 6616 6617 
-   6784 6785 6786 6787 6788 6789 6790 6791 6792 6793 
-   6800 6801 6802 6803 6804 6805 6806 6807 6808 6809 
-   6992 6993 6994 6995 6996 6997 6998 6999 7000 7001 
-   7088 7089 7090 7091 7092 7093 7094 7095 7096 7097 
-   7232 7233 7234 7235 7236 7237 7238 7239 7240 7241 
-   7248 7249 7250 7251 7252 7253 7254 7255 7256 7257 
-   42528 42529 42530 42531 42532 42533 42534 42535 42536 42537 
-   43216 43217 43218 43219 43220 43221 43222 43223 43224 43225 
-   43264 43265 43266 43267 43268 43269 43270 43271 43272 43273 
-   43472 43473 43474 43475 43476 43477 43478 43479 43480 43481 
-   43600 43601 43602 43603 43604 43605 43606 43607 43608 43609 
-   44016 44017 44018 44019 44020 44021 44022 44023 44024 44025 
-   65296 65297 65298 65299 65300 65301 65302 65303 65304 65305])
+(def basic-latin-ranges                             [[\u0020 \u007F]])
+(def latin-1-supplement-ranges                      [[\u00A0 \u00FF]])
+(def latin-extended-a-ranges                        [[\u0100 \u017F]])
+(def latin-extended-b-ranges                        [[\u0180 \u024F]])
+(def ipa-extensions-ranges                          [[\u0250 \u02AF]])
+(def spacing-modifier-letters-ranges                [[\u02B0 \u02FF]])
+(def combining-diacritical-marks-ranges             [[\u0300 \u036F]])
+(def greek-and-coptic-ranges                        [[\u0370 \u03FF]])
+(def cyrillic-ranges                                [[\u0400 \u04FF]])
+(def cyrillic-supplementary-ranges                  [[\u0500 \u052F]])
+(def armenian-ranges                                [[\u0530 \u058F]])
+(def hebrew-ranges                                  [[\u0590 \u05FF]])
+(def arabic-ranges                                  [[\u0600 \u06FF]])
+(def syriac-ranges                                  [[\u0700 \u074F]])
+(def thaana-ranges                                  [[\u0780 \u07BF]])
+(def devanagari-ranges                              [[\u0900 \u097F]])
+(def bengali-ranges                                 [[\u0980 \u09FF]])
+(def gurmukhi-ranges                                [[\u0A00 \u0A7F]])
+(def gujarati-ranges                                [[\u0A80 \u0AFF]])
+(def oriya-ranges                                   [[\u0B00 \u0B7F]])
+(def tamil-ranges                                   [[\u0B80 \u0BFF]])
+(def telugu-ranges                                  [[\u0C00 \u0C7F]])
+(def kannada-ranges                                 [[\u0C80 \u0CFF]])
+(def malayalam-ranges                               [[\u0D00 \u0D7F]])
+(def sinhala-ranges                                 [[\u0D80 \u0DFF]])
+(def thai-ranges                                    [[\u0E00 \u0E7F]])
+(def lao-ranges                                     [[\u0E80 \u0EFF]])
+(def tibetan-ranges                                 [[\u0F00 \u0FFF]])
+(def myanmar-ranges                                 [[\u1000 \u109F]])
+;(def linear-b-syllabary-ranges                      [[\u10000 \u1007F]])
+;(def linear-b-ideograms-ranges                      [[\u10080 \u100FF]])
+;(def aegean-numbers-ranges                          [[\u10100 \u1013F]])
+;(def old-italic-ranges                              [[\u10300 \u1032F]])
+;(def gothic-ranges                                  [[\u10330 \u1034F]])
+;(def ugaritic-ranges                                [[\u10380 \u1039F]])
+;(def deseret-ranges                                 [[\u10400 \u1044F]])
+;(def shavian-ranges                                 [[\u10450 \u1047F]])
+;(def osmanya-ranges                                 [[\u10480 \u104AF]])
+;(def cypriot-syllabary-ranges                       [[\u10800 \u1083F]])
+(def georgian-ranges                                [[\u10A0 \u10FF]])
+(def hangul-jamo-ranges                             [[\u1100 \u11FF]])
+(def ethiopic-ranges                                [[\u1200 \u137F]])
+(def cherokee-ranges                                [[\u13A0 \u13FF]])
+(def unified-canadian-aboriginal-syllabics-ranges   [[\u1400 \u167F]])
+(def ogham-ranges                                   [[\u1680 \u169F]])
+(def runic-ranges                                   [[\u16A0 \u16FF]])
+(def tagalog-ranges                                 [[\u1700 \u171F]])
+(def hanunoo-ranges                                 [[\u1720 \u173F]])
+(def buhid-ranges                                   [[\u1740 \u175F]])
+(def tagbanwa-ranges                                [[\u1760 \u177F]])
+(def khmer-ranges                                   [[\u1780 \u17FF]])
+(def mongolian-ranges                               [[\u1800 \u18AF]])
+(def limbu-ranges                                   [[\u1900 \u194F]])
+(def tai-le-ranges                                  [[\u1950 \u197F]])
+(def khmer-symbols-ranges                           [[\u19E0 \u19FF]])
+(def phonetic-extensions-ranges                     [[\u1D00 \u1D7F]])
+;(def byzantine-musical-symbols-ranges               [[\u1D000 \u1D0FF]])
+;(def musical-symbols-ranges                         [[\u1D100 \u1D1FF]])
+;(def tai-xuan-jing-symbols-ranges                   [[\u1D300 \u1D35F]])
+;(def mathematical-alphanumeric-symbols-ranges       [[\u1D400 \u1D7FF]])
+(def latin-extended-additional-ranges               [[\u1E00 \u1EFF]])
+(def greek-extended-ranges                          [[\u1F00 \u1FFF]])
+(def general-punctuation-ranges                     [[\u2000 \u206F]])
+;(def cjk-unified-ideographs-extension-b-ranges      [[\u20000 \u2A6DF]])
+(def superscripts-and-subscripts-ranges             [[\u2070 \u209F]])
+(def currency-symbols-ranges                        [[\u20A0 \u20CF]])
+(def combining-diacritical-marks-for-symbols-ranges [[\u20D0 \u20FF]])
+(def letterlike-symbols-ranges                      [[\u2100 \u214F]])
+(def number-forms-ranges                            [[\u2150 \u218F]])
+(def arrows-ranges                                  [[\u2190 \u21FF]])
+(def mathematical-operators-ranges                  [[\u2200 \u22FF]])
+(def miscellaneous-technical-ranges                 [[\u2300 \u23FF]])
+(def control-pictures-ranges                        [[\u2400 \u243F]])
+(def optical-character-recognition-ranges           [[\u2440 \u245F]])
+(def enclosed-alphanumerics-ranges                  [[\u2460 \u24FF]])
+(def box-drawing-ranges                             [[\u2500 \u257F]])
+(def block-elements-ranges                          [[\u2580 \u259F]])
+(def geometric-shapes-ranges                        [[\u25A0 \u25FF]])
+(def miscellaneous-symbols-ranges                   [[\u2600 \u26FF]])
+(def dingbats-ranges                                [[\u2700 \u27BF]])
+(def miscellaneous-mathematical-symbols-a-ranges    [[\u27C0 \u27EF]])
+(def supplemental-arrows-a-ranges                   [[\u27F0 \u27FF]])
+(def braille-patterns-ranges                        [[\u2800 \u28FF]])
+(def supplemental-arrows-b-ranges                   [[\u2900 \u297F]])
+(def miscellaneous-mathematical-symbols-b-ranges    [[\u2980 \u29FF]])
+(def supplemental-mathematical-operators-ranges     [[\u2A00 \u2AFF]])
+(def miscellaneous-symbols-and-arrows-ranges        [[\u2B00 \u2BFF]])
+(def cjk-radicals-supplement-ranges                 [[\u2E80 \u2EFF]])
+(def kangxi-radicals-ranges                         [[\u2F00 \u2FDF]])
+;(def cjk-compatibility-ideographs-supplement-ranges [[\u2F800 \u2FA1F]])
+(def ideographic-description-characters-ranges      [[\u2FF0 \u2FFF]])
+(def cjk-symbols-and-punctuation-ranges             [[\u3000 \u303F]])
+(def hiragana-ranges                                [[\u3040 \u309F]])
+(def katakana-ranges                                [[\u30A0 \u30FF]])
+(def bopomofo-ranges                                [[\u3100 \u312F]])
+(def hangul-compatibility-jamo-ranges               [[\u3130 \u318F]])
+(def kanbun-ranges                                  [[\u3190 \u319F]])
+(def bopomofo-extended-ranges                       [[\u31A0 \u31BF]])
+(def katakana-phonetic-extensions-ranges            [[\u31F0 \u31FF]])
+(def enclosed-cjk-letters-and-months-ranges         [[\u3200 \u32FF]])
+(def cjk-compatibility-ranges                       [[\u3300 \u33FF]])
+(def cjk-unified-ideographs-extension-a-ranges      [[\u3400 \u4DBF]])
+(def yijing-hexagram-symbols-ranges                 [[\u4DC0 \u4DFF]])
+(def cjk-unified-ideographs-ranges                  [[\u4E00 \u9FFF]])
+(def yi-syllables-ranges                            [[\uA000 \uA48F]])
+(def yi-radicals-ranges                             [[\uA490 \uA4CF]])
+(def hangul-syllables-ranges                        [[\uAC00 \uD7AF]])
+;(def high-surrogates-ranges                         [[\uD800 \uDB7F]])
+;(def high-private-use-surrogates-ranges             [[\uDB80 \uDBFF]])
+;(def low-surrogates-ranges                          [[\uDC00 \uDFFF]])
+;(def private-use-area-ranges                        [[\uE000 \uF8FF]])
+;(def tags-ranges                                    [[\uE0000 \uE007F]])
+(def cjk-compatibility-ideographs-ranges            [[\uF900 \uFAFF]])
+(def alphabetic-presentation-forms-ranges           [[\uFB00 \uFB4F]])
+(def arabic-presentation-forms-a-ranges             [[\uFB50 \uFDFF]])
+(def variation-selectors-ranges                     [[\uFE00 \uFE0F]])
+(def combining-half-marks-ranges                    [[\uFE20 \uFE2F]])
+(def cjk-compatibility-forms-ranges                 [[\uFE30 \uFE4F]])
+(def small-form-variants-ranges                     [[\uFE50 \uFE6F]])
+(def arabic-presentation-forms-b-ranges             [[\uFE70 \uFEFF]])
+(def halfwidth-and-fullwidth-forms-ranges           [[\uFF00 \uFFEF]])
+(def specials-ranges                                [[\uFFF0 \uFFFF]])
+
+   

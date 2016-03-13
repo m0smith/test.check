@@ -1380,6 +1380,11 @@ For example, (uchar-choices clojure.test.check.unicode/hebrew-ranges)
   "Generate strings. May generate unprintable characters."
   (fmap clojure.string/join (vector uchar)))
 
+(defn ustring-choices
+  "Generate strings. May generate unprintable characters."
+  [ranges]
+  (fmap clojure.string/join (vector (uchar-choices ranges))))
+
 (def ustring-alphanumeric
   "Generate alphanumeric strings."
   (fmap clojure.string/join (vector uchar-alphanumeric)))

@@ -1323,12 +1323,29 @@
 (defn- uchar? [^Character c]
 ;;  #?(:clj #(Character/isDefined c) :cljs #(string? c)))
   (core/let [r (Character/isDefined c)]
-    (if r r
-        (do (println "unchar? fails for " c r) r))))
+    r))
+;;    (if r r
+;;        (do (println "unchar? fails for " c r) r))))
 
 (def uchar
   "Generates unicode characters from \u0000 to \uFFFF."
   (uchar* uchar?))
+
+(defn uchar-choices 
+  " 
+Generates Unicode characters from within the given RANGES.  RANGES
+  is a vector of either a singe Unicode character or a pair (vector)
+  which spcifies a range of characters inclusive.
+
+For example, (uchar-choices clojure.test.check.unicode/hebrew-ranges)
+  will return only characters in the hbrew script.  Ranges can be
+  combined using concat.
+"
+  [ranges]
+  (such-that uchar?
+             (fmap core/char
+                   (choices ranges))))
+
 
 
 (defn uchar2

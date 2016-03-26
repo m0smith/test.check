@@ -114,6 +114,10 @@
  
 ])
 
+;;
+;; All Unicode defined ranges
+;;
+
 (def basic-latin-ranges                             [[\u0020 \u007F]])
 (def latin-1-supplement-ranges                      [[\u00A0 \u00FF]])
 (def latin-extended-a-ranges                        [[\u0100 \u017F]])
@@ -143,16 +147,6 @@
 (def lao-ranges                                     [[\u0E80 \u0EFF]])
 (def tibetan-ranges                                 [[\u0F00 \u0FFF]])
 (def myanmar-ranges                                 [[\u1000 \u109F]])
-;(def linear-b-syllabary-ranges                      [[\u10000 \u1007F]])
-;(def linear-b-ideograms-ranges                      [[\u10080 \u100FF]])
-;(def aegean-numbers-ranges                          [[\u10100 \u1013F]])
-;(def old-italic-ranges                              [[\u10300 \u1032F]])
-;(def gothic-ranges                                  [[\u10330 \u1034F]])
-;(def ugaritic-ranges                                [[\u10380 \u1039F]])
-;(def deseret-ranges                                 [[\u10400 \u1044F]])
-;(def shavian-ranges                                 [[\u10450 \u1047F]])
-;(def osmanya-ranges                                 [[\u10480 \u104AF]])
-;(def cypriot-syllabary-ranges                       [[\u10800 \u1083F]])
 (def georgian-ranges                                [[\u10A0 \u10FF]])
 (def hangul-jamo-ranges                             [[\u1100 \u11FF]])
 (def ethiopic-ranges                                [[\u1200 \u137F]])
@@ -170,14 +164,9 @@
 (def tai-le-ranges                                  [[\u1950 \u197F]])
 (def khmer-symbols-ranges                           [[\u19E0 \u19FF]])
 (def phonetic-extensions-ranges                     [[\u1D00 \u1D7F]])
-;(def byzantine-musical-symbols-ranges               [[\u1D000 \u1D0FF]])
-;(def musical-symbols-ranges                         [[\u1D100 \u1D1FF]])
-;(def tai-xuan-jing-symbols-ranges                   [[\u1D300 \u1D35F]])
-;(def mathematical-alphanumeric-symbols-ranges       [[\u1D400 \u1D7FF]])
 (def latin-extended-additional-ranges               [[\u1E00 \u1EFF]])
 (def greek-extended-ranges                          [[\u1F00 \u1FFF]])
 (def general-punctuation-ranges                     [[\u2000 \u206F]])
-;(def cjk-unified-ideographs-extension-b-ranges      [[\u20000 \u2A6DF]])
 (def superscripts-and-subscripts-ranges             [[\u2070 \u209F]])
 (def currency-symbols-ranges                        [[\u20A0 \u20CF]])
 (def combining-diacritical-marks-for-symbols-ranges [[\u20D0 \u20FF]])
@@ -203,7 +192,6 @@
 (def miscellaneous-symbols-and-arrows-ranges        [[\u2B00 \u2BFF]])
 (def cjk-radicals-supplement-ranges                 [[\u2E80 \u2EFF]])
 (def kangxi-radicals-ranges                         [[\u2F00 \u2FDF]])
-;(def cjk-compatibility-ideographs-supplement-ranges [[\u2F800 \u2FA1F]])
 (def ideographic-description-characters-ranges      [[\u2FF0 \u2FFF]])
 (def cjk-symbols-and-punctuation-ranges             [[\u3000 \u303F]])
 (def hiragana-ranges                                [[\u3040 \u309F]])
@@ -221,11 +209,6 @@
 (def yi-syllables-ranges                            [[\uA000 \uA48F]])
 (def yi-radicals-ranges                             [[\uA490 \uA4CF]])
 (def hangul-syllables-ranges                        [[\uAC00 \uD7AF]])
-;(def high-surrogates-ranges                         [[\uD800 \uDB7F]])
-;(def high-private-use-surrogates-ranges             [[\uDB80 \uDBFF]])
-;(def low-surrogates-ranges                          [[\uDC00 \uDFFF]])
-;(def private-use-area-ranges                        [[\uE000 \uF8FF]])
-;(def tags-ranges                                    [[\uE0000 \uE007F]])
 (def cjk-compatibility-ideographs-ranges            [[\uF900 \uFAFF]])
 (def alphabetic-presentation-forms-ranges           [[\uFB00 \uFB4F]])
 (def arabic-presentation-forms-a-ranges             [[\uFB50 \uFDFF]])
@@ -237,4 +220,156 @@
 (def halfwidth-and-fullwidth-forms-ranges           [[\uFF00 \uFFEF]])
 (def specials-ranges                                [[\uFFF0 \uFFFF]])
 
-   
+;;
+;; The following are code points beyond \uFFFF
+
+(def linear-b-syllabary-ranges                      [[0x10000 0x1007F]])
+(def linear-b-ideograms-ranges                      [[0x10080 0x100FF]])
+(def aegean-numbers-ranges                          [[0x10100 0x1013F]])
+(def old-italic-ranges                              [[0x10300 0x1032F]])
+(def gothic-ranges                                  [[0x10330 0x1034F]])
+(def ugaritic-ranges                                [[0x10380 0x1039F]])
+(def deseret-ranges                                 [[0x10400 0x1044F]])
+(def shavian-ranges                                 [[0x10450 0x1047F]])
+(def osmanya-ranges                                 [[0x10480 0x104AF]])
+(def cypriot-syllabary-ranges                       [[0x10800 0x1083F]])
+(def high-surrogates-ranges                         [[0xD800 0xDB7F]])
+(def high-private-use-surrogates-ranges             [[0xDB80 0xDBFF]])
+(def low-surrogates-ranges                          [[0xDC00 0xDFFF]])
+(def private-use-area-ranges                        [[0xE000 0xF8FF]])
+(def tags-ranges                                    [[0xE0000 0xE007F]])
+(def cjk-compatibility-ideographs-supplement-ranges [[0x2F800 0x2FA1F]])
+(def cjk-unified-ideographs-extension-b-ranges      [[0x20000 0x2A6DF]])
+(def byzantine-musical-symbols-ranges               [[0x1D000 0x1D0FF]])
+(def musical-symbols-ranges                         [[0x1D100 0x1D1FF]])
+(def tai-xuan-jing-symbols-ranges                   [[0x1D300 0x1D35F]])
+(def mathematical-alphanumeric-symbols-ranges       [[0x1D400 0x1D7FF]])
+
+
+
+(def all-unicode-ranges
+  (reduce #(apply conj %1 %2) basic-latin-ranges 
+          [
+           latin-1-supplement-ranges
+           latin-extended-a-ranges
+           latin-extended-b-ranges
+           ipa-extensions-ranges
+           spacing-modifier-letters-ranges
+           combining-diacritical-marks-ranges
+           greek-and-coptic-ranges
+           cyrillic-ranges
+           cyrillic-supplementary-ranges
+           armenian-ranges
+           hebrew-ranges
+           arabic-ranges
+           syriac-ranges
+           thaana-ranges
+           devanagari-ranges
+           bengali-ranges
+           gurmukhi-ranges
+           gujarati-ranges
+           oriya-ranges
+           tamil-ranges
+           telugu-ranges
+           kannada-ranges
+           malayalam-ranges
+           sinhala-ranges
+           thai-ranges
+           lao-ranges
+           tibetan-ranges
+           myanmar-ranges
+           georgian-ranges
+           hangul-jamo-ranges
+           ethiopic-ranges
+           cherokee-ranges
+           unified-canadian-aboriginal-syllabics-ranges
+           ogham-ranges
+           runic-ranges
+           tagalog-ranges
+           hanunoo-ranges
+           buhid-ranges
+           tagbanwa-ranges
+           khmer-ranges
+           mongolian-ranges
+           limbu-ranges
+           tai-le-ranges
+           khmer-symbols-ranges
+           phonetic-extensions-ranges
+           latin-extended-additional-ranges
+           greek-extended-ranges
+           general-punctuation-ranges
+           superscripts-and-subscripts-ranges
+           currency-symbols-ranges
+           combining-diacritical-marks-for-symbols-ranges
+           letterlike-symbols-ranges
+           number-forms-ranges
+           arrows-ranges
+           mathematical-operators-ranges
+           miscellaneous-technical-ranges
+           control-pictures-ranges
+           optical-character-recognition-ranges
+           enclosed-alphanumerics-ranges
+           box-drawing-ranges
+           block-elements-ranges
+           geometric-shapes-ranges
+           miscellaneous-symbols-ranges
+           dingbats-ranges
+           miscellaneous-mathematical-symbols-a-ranges
+           supplemental-arrows-a-ranges
+           braille-patterns-ranges
+           supplemental-arrows-b-ranges
+           miscellaneous-mathematical-symbols-b-ranges
+           supplemental-mathematical-operators-ranges
+           miscellaneous-symbols-and-arrows-ranges
+           cjk-radicals-supplement-ranges
+           kangxi-radicals-ranges
+           ideographic-description-characters-ranges
+           cjk-symbols-and-punctuation-ranges
+           hiragana-ranges
+           katakana-ranges
+           bopomofo-ranges
+           hangul-compatibility-jamo-ranges
+           kanbun-ranges
+           bopomofo-extended-ranges
+           katakana-phonetic-extensions-ranges
+           enclosed-cjk-letters-and-months-ranges
+           cjk-compatibility-ranges
+           cjk-unified-ideographs-extension-a-ranges
+           yijing-hexagram-symbols-ranges
+           cjk-unified-ideographs-ranges
+           yi-syllables-ranges
+           yi-radicals-ranges
+           hangul-syllables-ranges
+           cjk-compatibility-ideographs-ranges
+           alphabetic-presentation-forms-ranges
+           arabic-presentation-forms-a-ranges
+           variation-selectors-ranges
+           combining-half-marks-ranges
+           cjk-compatibility-forms-ranges
+           small-form-variants-ranges
+           arabic-presentation-forms-b-ranges
+           halfwidth-and-fullwidth-forms-ranges
+           specials-ranges
+           linear-b-syllabary-ranges
+           linear-b-ideograms-ranges
+           aegean-numbers-ranges
+           old-italic-ranges
+           gothic-ranges
+           ugaritic-ranges
+           deseret-ranges
+           shavian-ranges
+           osmanya-ranges
+           cypriot-syllabary-ranges
+           high-surrogates-ranges
+           high-private-use-surrogates-ranges
+           low-surrogates-ranges
+           private-use-area-ranges
+           tags-ranges
+           cjk-compatibility-ideographs-supplement-ranges
+           cjk-unified-ideographs-extension-b-ranges
+           byzantine-musical-symbols-ranges
+           musical-symbols-ranges
+           tai-xuan-jing-symbols-ranges
+           mathematical-alphanumeric-symbols-ranges]))
+
+

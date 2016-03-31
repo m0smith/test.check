@@ -1132,7 +1132,9 @@
 (defn choices* 
   "Generatator, based on choose, that accepts multiple ranges."
   [ranges]
-  (one-of (ranges-to-gens ranges)))
+  (if (seq ranges)
+    (one-of (ranges-to-gens ranges))
+    (return nil)))
 
 (def choices (memoize choices*))
 

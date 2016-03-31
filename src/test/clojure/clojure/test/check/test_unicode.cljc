@@ -24,12 +24,23 @@
 
 ;; Generating Unicode generators
 ;; --------------------------------------------------------------------------
+
+(defn gen-ustring-test 
+  ([g] (g))
+  ([g i-gen] 
+   (gen/bind i-gen
+             (fn [i]
+               (gen/bind (g i)
+                         (fn [s] [s i]))))))
+
+
 (deftest generators-unicode-test
   (let [t (fn [generator pred]
             (is (:result (tc/quick-check 100
                            (prop/for-all [x generator]
                              (pred x))))))
         is-uchar-fn #?(:clj (fn [^Character c] (let [r (Character/isDefined c) ^Integer i c] (if r r (do (println i) nil))))  :cljs string?)
+        is-fixed-string? (fn [[s i]] (and (string? s) (= i (count s))))
         ]
 
     (testing "unicode keyword"              (t gen/ukeyword keyword?))
@@ -45,7 +56,7 @@
     (testing "unicode char-alphanumeric"    (t gen/uchar-alphanumeric   is-uchar-fn))
     (testing "unicode code-point"           (t gen/code-point           is-uchar-fn))
 
-    (testing "unicode string"               (t gen/ustring               string?))
+    (testing "unicode string"               (t (gen-ustring-test gen/ustring)  string?))
     (testing "ustring-from-code-point"      (t gen/ustring-from-code-point string?))
     (testing "string-alphanumeric"          (t gen/ustring-alphanumeric  string?))))
 
@@ -98,6 +109,16 @@
                              (gen/fmap (fn [v] (vector ranges v))
                                        (gen/choices ranges))))]
                 (valid-choice? value ranges)))
+
+
+
+(defspec test-fixed-length-ustring 200
+  (prop/for-all [[s i ]
+                 (gen/bind gen/pos-int
+                           (fn [i]
+                             (gen/fmap (fn [s] (vector s i))
+                                       (gen/ustring i))))]
                 
+                (and (string? s) (= i (count s)))))
                 
 

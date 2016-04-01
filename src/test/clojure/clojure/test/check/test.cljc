@@ -295,6 +295,49 @@
     (testing "list"   (t (gen/list gen/int)   list?))
     (testing "map"    (t (gen/map gen/int gen/int) map?))))
 
+;; to-string
+;; -------------------------------------------------------------------------
+(defspec to-string-no-args
+  (prop/for-all [s (gen/to-string)]
+                (is (string? s))))
+
+(defspec to-string-wtih-element-gen
+  (prop/for-all [s (gen/to-string gen/char)]
+                (is (string? s))))
+
+
+(defspec to-string-with-element-gen-num-elements
+  (prop/for-all [[num-elements s] 
+                 (gen/bind gen/nat
+                           (fn [n]
+                             (gen/fmap #(vector n %)
+                                       (gen/to-string gen/char {:num-elements n}))))]
+                (is (= num-elements (count s)))
+                (is (string? s))))
+
+(defspec to-string-with-element-gen-min-elements-max-elements
+  (prop/for-all [[min max s] 
+                 (gen/bind (gen/tuple gen/nat gen/nat)
+                           (fn [[min length]]
+                             (let [max (+ min length)]
+                               (gen/fmap #(vector min max %)
+                                         (gen/to-string gen/char {:min-elements min :max-elements max})))))]
+                (is (<= min (count s) max))
+                (is (string? s))))
+
+
+(defspec to-string-with-element-gen-min-elements-max-elements-num-elements
+  (prop/for-all [[min max num s] 
+                 (gen/bind (gen/tuple gen/nat gen/nat gen/nat)
+                           (fn [[min length num]]
+                             (let [max (+ min length)]
+                               (gen/fmap #(vector min max num %)
+                                         (gen/to-string gen/char {:min-elements min :max-elements max :num-elements num})))))]
+                (is (= num (count s)))
+                (is (string? s))))
+                
+                 
+
 ;; Distinct collections
 ;; --------------------------------------------------------------------------
 

@@ -1159,6 +1159,31 @@
   (frequency [[2 char-alpha]
               [1 char-symbol-special]]))
 
+
+(defn to-string
+  "Generator that generates strings based element-gen, which default to char.  
+  Takes an optional second parameter map.
+
+  Available options:
+
+    :num-elements  the fixed size of generated strings
+    :min-elements  the min size of generated strings
+    :max-elements  the max size of generated strings
+
+  Both :min-elements and :max-elements need to be defined for them to take affect.
+  If :num-elements is not nil, it takes precedence over :min-elements and :max-elements.
+"
+  ([] (to-string char {}))
+  ([element-gen] (to-string element-gen {}))
+  ([element-gen {:keys [num-elements min-elements max-elements]}] 
+   (if num-elements 
+     (fmap clojure.string/join (vector element-gen num-elements))
+     (if (and min-elements max-elements)
+       (fmap clojure.string/join (vector element-gen min-elements max-elements))
+       (fmap clojure.string/join (vector element-gen))))))
+  
+
+
 (def string
   "Generate strings. May generate unprintable characters."
   (fmap clojure.string/join (vector char)))

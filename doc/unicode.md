@@ -45,7 +45,7 @@ Unicode support is divided into 2 sections: char based and code-point/int based
   Code-point or int based characters
   <table>
 <thead>
-<tr><td> Standard Generator </td><td> Unicode Generator       </td><td> Generates</td><tr>
+<tr><th> Standard Generator </th><th> Unicode Generator       </th><th> Generates</th><tr>
 </thead>
 <tbody>
 <tr><td> string             </td><td> ustring-from-code-point </td><td> Unicode strings consisting of any valid code point. </td></tr>

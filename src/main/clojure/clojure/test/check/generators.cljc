@@ -1160,9 +1160,10 @@
               [1 char-symbol-special]]))
 
 
-(defn to-string
-  "Generator that generates strings based element-gen, which default to char.  
-  Takes an optional second parameter map.
+
+(defn apply-to
+  "Generator that generates values by first generating  a vector based on element-gen 
+  and then applying apply-fn to the vector.  Takes an optional third parameter map.
 
   Available options:
 
@@ -1173,14 +1174,35 @@
   Both :min-elements and :max-elements need to be defined for them to take affect.
   If :num-elements is not nil, it takes precedence over :min-elements and :max-elements.
 "
+  ([element-gen apply-fn] (apply-to element-gen apply-fn {}))
+  ([element-gen apply-fn {:keys [num-elements min-elements max-elements]}] 
+   (if num-elements 
+     (fmap apply-fn (vector element-gen num-elements))
+     (if (and min-elements max-elements)
+       (fmap apply-fn (vector element-gen min-elements max-elements))
+       (fmap apply-fn (vector element-gen))))))
+
+
+(defn to-string
+  "Generator that generates strings based element-gen, which default to char.  
+  Takes an optional second parameter map.
+
+  Available options:
+
+    :num-elements  the fixed size of generated strings
+    :min-elements  the min size of generated strings
+    :max-elements  the max size of generated strings
+    :sep           A string that will be used as a seperator between elements
+
+  Both :min-elements and :max-elements need to be defined for them to take affect.
+  If :num-elements is not nil, it takes precedence over :min-elements and :max-elements.
+"
   ([] (to-string char {}))
   ([element-gen] (to-string element-gen {}))
-  ([element-gen {:keys [num-elements min-elements max-elements]}] 
-   (if num-elements 
-     (fmap clojure.string/join (vector element-gen num-elements))
-     (if (and min-elements max-elements)
-       (fmap clojure.string/join (vector element-gen min-elements max-elements))
-       (fmap clojure.string/join (vector element-gen))))))
+  ([element-gen {:keys [sep] :as options}] 
+   (core/let [join-fn (if sep (partial clojure.string/join sep) clojure.string/join)]
+     (apply-to element-gen join-fn options))))
+
   
 
 

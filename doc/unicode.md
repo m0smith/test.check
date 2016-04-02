@@ -18,27 +18,38 @@ Unicode support is divided into 2 sections: char based and code-point/int based
 
   The char based Unicode support mirrors the normal char and string generators
 
- | Standard Generator  | Unicode Generator    | Generates                                                                     |
- |---------------------+----------------------+-------------------------------------------------------------------------------|
- | char                | uchar                | valid Unicode characters (char) from \u0000 to \uFFFF.                        |
- | char-asciii         | uchar-alpha          | letter Unicode characters.                                                    |
- |                     | uchar-numeric        | digit Unicode characters                                                      |
- | char-alphanumeric   | uchar-alphanumeric   | letter and digit Unicode characters                                           |
- | string              | ustring              | Unicode strings consisting of only chars                                      |
- | string-alphanumeric | ustring-alphanumeric | Unicode alphanumeric strings.                                                 |
- |                     | ustring-choices      | Unicode strings in the given ranges.                                          |
- | namespace           | unamespace           | Unicode strings suitable for use as a Clojure namespace                       |
- | keyword             | ukeyword             | Unicode strings suitable for use as a Clojure keyword                         |
- | keyword-ns          | ukeyword-ns          | Unicode strings suitable for use as a Clojure keyword with optional namespace |
- | symbol              | usymbol              | Unicode strings suitable for use as a Clojure symbol                          |
- | symbol-ns           | usymbol-ns           | Unicode strings suitable for use as a Clojure symbol with optional namespace  |
+<table>
+<thead>
+<td> Standard Generator  </td><td> Unicode Generator    </td><td> Generates                                                                     </td>
+</thead>
+<tbody>
+<tr><td> char                </td><td> uchar                </td><td> valid Unicode characters (char) from \u0000 to \uFFFF.                        </td><tr>
+<tr><td> char-asciii         </td><td> uchar-alpha          </td><td> letter Unicode characters.                                                    </td><tr>
+<tr><td>                     </td><td> uchar-numeric        </td><td> digit Unicode characters                                                      </td><tr>
+<tr><td> char-alphanumeric   </td><td> uchar-alphanumeric   </td><td> letter and digit Unicode characters                                           </td><tr>
+<tr><td> string              </td><td> ustring              </td><td> Unicode strings consisting of only chars                                      </td><tr>
+<tr><td> string-alphanumeric </td><td> ustring-alphanumeric </td><td> Unicode alphanumeric strings.                                                 </td><tr>
+<tr><td>                     </td><td> ustring-choices      </td><td> Unicode strings in the given ranges.                                          </td><tr>
+<tr><td> namespace           </td><td> unamespace           </td><td> Unicode strings suitable for use as a Clojure namespace                       </td><tr>
+<tr><td> keyword             </td><td> ukeyword             </td><td> Unicode strings suitable for use as a Clojure keyword                         </td><tr>
+<tr><td> keyword-ns          </td><td> ukeyword-ns          </td><td> Unicode strings suitable for use as a Clojure keyword with optional namespace </td><tr>
+<tr><td> symbol              </td><td> usymbol              </td><td> Unicode strings suitable for use as a Clojure symbol                          </td><tr>
+<tr><td> symbol-ns           </td><td> usymbol-ns           </td><td> Unicode strings suitable for use as a Clojure symbol with optional namespace  </td><tr>
  
+</tbody>
+</table>
+
+
+
 
   Code-point or int based characters
-
- | Standard Generator | Unicode Generator       | Unicode Desc                                                  |
- |--------------------+-------------------------+---------------------------------------------------------------|
- | string             | ustring-from-code-point | Generates Unicode strings consisting of any valid code point. |
- | char               | code-point              | Generates a valid Unicode code point                          |
- 
+  <table>
+<thead>
+<tr><td> Standard Generator </td><td> Unicode Generator       </td><td> Unicode Desc                                                  </td><tr>
+</thead>
+<tbody>
+<tr><td> string             </td><td> ustring-from-code-point </td><td> Generates Unicode strings consisting of any valid code point. </td><tr>
+<tr><td> char               </td><td> code-point              </td><td> Generates a valid Unicode code point                          </td><tr>
+</tbody>
+</table>
 

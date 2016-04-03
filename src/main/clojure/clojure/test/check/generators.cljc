@@ -1160,49 +1160,6 @@
               [1 char-symbol-special]]))
 
 
-
-(defn apply-to
-  "Generator that generates values by first generating  a vector based on element-gen 
-  and then applying apply-fn to the vector.  Takes an optional third parameter map.
-
-  Available options:
-
-    :num-elements  the fixed size of generated strings
-    :min-elements  the min size of generated strings
-    :max-elements  the max size of generated strings
-
-  Both :min-elements and :max-elements need to be defined for them to take affect.
-  If :num-elements is not nil, it takes precedence over :min-elements and :max-elements.
-"
-  ([element-gen apply-fn] (apply-to element-gen apply-fn {}))
-  ([element-gen apply-fn {:keys [num-elements min-elements max-elements]}] 
-   (if num-elements 
-     (fmap apply-fn (vector element-gen num-elements))
-     (if (and min-elements max-elements)
-       (fmap apply-fn (vector element-gen min-elements max-elements))
-       (fmap apply-fn (vector element-gen))))))
-
-
-(defn to-string
-  "Generator that generates strings based element-gen, which default to char.  
-  Takes an optional second parameter map.
-
-  Available options:
-
-    :num-elements  the fixed size of generated strings
-    :min-elements  the min size of generated strings
-    :max-elements  the max size of generated strings
-    :sep           A string that will be used as a seperator between elements
-
-  Both :min-elements and :max-elements need to be defined for them to take affect.
-  If :num-elements is not nil, it takes precedence over :min-elements and :max-elements.
-"
-  ([] (to-string char {}))
-  ([element-gen] (to-string element-gen {}))
-  ([element-gen {:keys [sep] :as options}] 
-   (core/let [join-fn (if sep (partial clojure.string/join sep) clojure.string/join)]
-     (apply-to element-gen join-fn options))))
-
   
 
 
@@ -1537,3 +1494,88 @@
          (return val#)))
     (core/let [[binding gen & more] bindings]
       `(bind ~gen (fn [~binding] (let [~@more] ~@body))))))
+
+; -------
+
+(defn- apply-to-vector-args 
+  "Parse out the options for the call to vector"
+  [{:keys [num-elements min-elements max-elements]}]
+   (if num-elements 
+     [num-elements]
+     (if (and min-elements max-elements)
+       [min-elements max-elements]
+       [])))
+
+
+(defn apply-to
+  "Generator that generates values by first generating  a vector based on element-gen 
+  and then applying apply-fn to the vector.  Takes an optional third parameter map.
+
+  Available options:
+
+    :num-elements  the fixed size of generated strings
+    :min-elements  the min size of generated strings
+    :max-elements  the max size of generated strings
+
+  Both :min-elements and :max-elements need to be defined for them to take affect.
+  If :num-elements is not nil, it takes precedence over :min-elements and :max-elements.
+"
+  ([element-gen apply-fn] (apply-to element-gen apply-fn {}))
+  ([element-gen apply-fn {:keys [num-elements min-elements max-elements] :as options}] 
+   (let [v (if (generator? element-gen)
+             (core/apply vector element-gen (apply-to-vector-args options))
+             (core/apply tuple  element-gen))]
+     (apply-fn v))))
+
+
+(defn to-generator
+  "Convert a generator, function, value or nil to a generator"
+ [g-fn-v-nil def]
+  (cond
+    (generator? g-fn-v-nil) g-fn-v-nil
+    (core/fn? g-fn-v-nil) (fmap (fn [_] (g-fn-v-nil)) (return :_))
+    (core/not (core/nil? g-fn-v-nil)) (return g-fn-v-nil)
+    :else (return def)))
+  
+
+(defn- to-string-join [pre suf sep v]
+  (clojure.string/join sep (core/map #(str pre % suf) v)))
+
+
+(defn to-string
+  "Generator that generates strings based element-gen, which default to char.  
+  Takes an optional second parameter map.
+
+  element-gen can either be a single generator or a vector of generators.
+
+  Available options:
+
+    :num-elements  the fixed size of generated strings
+    :min-elements  the min size of generated strings
+    :max-elements  the max size of generated strings
+    :sep           A string or character or generator that will be used as a seperator between elements
+    :prefix        A string or character or generator that is prepended to the result
+    :suffix        A string or character or generator that is appended to the result
+    :element-prefix        A string or character or generator that is prepended to the result
+    :element-suffix        A string or character or generator that is prepended to the result
+
+  Both :min-elements and :max-elements need to be defined for them to take affect.
+  If :num-elements is not nil, it takes precedence over :min-elements and :max-elements.
+
+  :suffix and :prefix are always added
+
+  :element-suffix and :element-prefix are are only added if there is at least one element
+
+  :sep is only added if there are at least 2 elements
+"
+  ([] (to-string char {}))
+  ([element-gen] (to-string element-gen {}))
+  ([element-gen {:keys [sep prefix suffix element-prefix element-suffix] :as options}] 
+   (let [the-sep (to-generator sep "")
+         the-prefix (to-generator prefix "")
+         the-suffix (to-generator suffix "")
+         the-element-prefix (to-generator element-prefix "")
+         the-element-suffix (to-generator element-suffix "")]
+   (core/let [join-fn (partial to-string-join the-element-prefix the-element-suffix the-sep)]
+     (fmap #(str the-prefix % the-suffix) (apply-to element-gen join-fn options))))))
+

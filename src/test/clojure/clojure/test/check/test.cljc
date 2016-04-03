@@ -352,11 +352,11 @@
 ;; -------------------------------------------------------------------------
 (defspec to-string-no-args
   (prop/for-all [s (gen/to-string)]
-                (is (string? s))))
+                 (string? s)))
 
 (defspec to-string-wtih-element-gen
   (prop/for-all [s (gen/to-string gen/char)]
-                (is (string? s))))
+                (string? s)))
 
 
 (defspec to-string-with-element-gen-num-elements
@@ -365,8 +365,9 @@
                            (fn [n]
                              (gen/fmap #(vector n %)
                                        (gen/to-string gen/char {:num-elements n}))))]
-                (is (= num-elements (count s)))
-                (is (string? s))))
+
+                (and (= num-elements (count s))
+                     (string? s))))
 
 (defspec to-string-with-element-gen-num-elements-sep
   (prop/for-all [[num-elements s] 
@@ -375,8 +376,8 @@
                              (gen/fmap #(vector n %)
                                        (gen/to-string gen/char {:num-elements n :sep "," }))))]
                 (let [expected (if (= 0 num-elements) 0 (- (* 2 num-elements) 1))]
-                  (is (=  expected (count s)))
-                  (is (string? s)))))
+                  (and (=  expected (count s))
+                       (string? s)))))
 
 (defspec to-string-with-element-gen-min-elements-max-elements
   (prop/for-all [[min max s] 
